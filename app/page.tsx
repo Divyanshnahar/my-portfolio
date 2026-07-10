@@ -99,7 +99,7 @@ export default function Home() {
             <div className="t-out">→ <span className="t-hl">Firebase</span> · Docker · Postgres</div>
             <br />
             <div><span className="t-prompt">~/ </span><span className="t-cmd">cat status.txt</span></div>
-            <div className="t-out">🎓 IIIT Vadodara · <span className="t-hl">CSE &#39;27</span></div>
+            <div className="t-out">🎓 IIIT Vadodara · <span className="t-hl">CSE &#39;27</span> (CPI 7.44)</div>
             <div className="t-out">📍 Gandhinagar, India</div>
             <div className="t-out">⚡ Building cool things...</div>
             <br />
@@ -123,13 +123,13 @@ export default function Home() {
                   <a href="https://www.rayeva.com/" target="_blank" rel="noreferrer">Rayeva World Pvt Ltd ↗</a>
                 </div>
               </div>
-              <div className="exp-date">Apr 2026 – Present</div>
+              <div className="exp-date">May 2026 – Present</div>
             </div>
             <ul className="exp-bullets">
-              <li>Engineering the <strong>core backend architecture</strong> for a sustainable B2B/B2C marketplace, implementing secure payment, billing, and vendor onboarding modules using <strong>Node.js and REST APIs</strong>.</li>
-              <li>Integrating <strong>Generative AI</strong> to automate product descriptions and content generation, projected to <strong>reduce vendor onboarding time by 40%</strong> and improve SEO visibility.</li>
-              <li>Optimizing the order lifecycle management system to support high-concurrency transactions, aiming for a <strong>25% increase in operational efficiency</strong> for marketplace administrative tasks.</li>
-              <li>Collaborating on the end-to-end launch strategy, ensuring a scalable infrastructure capable of handling an initial target of <strong>1,000+ active sustainable product SKUs</strong>.</li>
+              <li><strong>Engineered core backend features</strong> using Node.js and REST APIs, including a scalable <strong>Excel-to-Supabase bulk product upload</strong> system that reduced B2B and B2C product upload time by 90%.</li>
+              <li><strong>Architected custom Razorpay checkout flows</strong>, implementing an automated 50% advance payment system for high-volume B2B orders to secure enterprise transactions.</li>
+              <li><strong>Automated post-purchase fulfillment</strong> by designing dynamic invoice generation and custom sticker modules, cutting manual processing time.</li>
+              <li><strong>Executed technical SEO optimizations</strong> and resolved critical system bugs, driving an 80% increase in organic search indexing and enhancing overall application stability.</li>
             </ul>
           </div>
         </div>
@@ -147,10 +147,8 @@ export default function Home() {
               <div className="exp-date">Jan 2026 – Feb 2026</div>
             </div>
             <ul className="exp-bullets">
-              <li>Developed and deployed scalable backend services using <strong>Firebase, Next.js, and Python</strong>, implementing authentication, Firestore workflows, and API integrations.</li>
-              <li>Designed responsive frontend interfaces using <strong>Plasmic</strong>, creating dashboards for clients and candidates with dynamic state management.</li>
-              <li>Integrated <strong>Generative AI</strong> for resume parsing, automated profile summaries, and AI-driven interview question generation.</li>
-              <li>Built end-to-end interview workflows including database triggers, cloud functions, and automated email-based interview invitations.</li>
+              <li>Developed backend services using <strong>Firebase, Next.js, and Python</strong>.</li>
+              <li>Built responsive dashboards and integrated AI-based features for automation.</li>
             </ul>
           </div>
         </div>
@@ -229,10 +227,10 @@ export default function Home() {
 
         <div className="skills-grid reveal">
           {[
-            { title: 'ML / AI', pills: ['Python', 'PyTorch', 'TensorFlow', 'Scikit-Learn', 'Deep Learning', 'NLP'] },
-            { title: 'LLMs & NLP', pills: ['Transformers', 'BERT', 'T5', 'Hugging Face', 'Embeddings', 'Text-to-SQL', 'Prompt Eng.'] },
-            { title: 'Web & Backend', pills: ['Next.js', 'React', 'TypeScript', 'FastAPI', 'Flask', 'Firebase', 'Node.js', 'REST APIs'] },
-            { title: 'Infra & Tools', pills: ['Docker', 'PostgreSQL', 'MySQL', 'MongoDB', 'Git', 'Linux', 'HF Spaces'] },
+            { title: 'Programming & ML', pills: ['C++', 'Javascript', 'Python', 'Machine Learning', 'Deep Learning', 'NLP', 'Scikit-Learn', 'TensorFlow'] },
+            { title: 'NLP & LLMs', pills: ['Text-to-SQL', 'Transformers', 'Hugging Face', 'Embeddings', 'Prompt Engineering'] },
+            { title: 'Web & Backend', pills: ['Next.js', 'React', 'TypeScript', 'Flask', 'FastAPI', 'REST APIs', 'Firebase', 'Plasmic'] },
+            { title: 'Databases & Tools', pills: ['MySQL', 'PostgreSQL', 'MongoDB', 'Docker', 'Git', 'Linux', 'HF Spaces'] },
           ].map(block => (
             <div key={block.title} className="skill-block">
               <div className="skill-block-title">{block.title}</div>
@@ -247,10 +245,11 @@ export default function Home() {
         <div className="section-label" style={{ marginTop: '3.5rem' }}>Highlights</div>
         <div className="achieve-list reveal" style={{ marginTop: '1rem' }}>
           {[
-            { icon: '🧠', text: <><strong>500+ DSA problems</strong> solved on LeetCode and CodeChef — consistent algorithmic thinking.</> },
-            { icon: '⚙️', text: <>Built multiple <strong>production-ready ML pipelines</strong> from training to containerized deployment.</> },
-            { icon: '🤗', text: <>Hands-on experience fine-tuning <strong>Transformer models</strong> — T5 and BERT — on real datasets.</> },
-            { icon: '🏆', text: <><strong>JEE Advanced 2023 — AIR 6252</strong>. Class XII CBSE: 91.6%. Currently at <strong>IIIT Vadodara</strong>, CPI 7.41.</> },
+            { icon: '🧠', text: <>Solved <strong>500+ DSA problems</strong> on <a href="https://leetcode.com/u/divyanshnahar15/" target="_blank" rel="noreferrer"><strong>LeetCode</strong></a> and CodeChef.</> },
+            { icon: '📈', text: <><strong>LeetCode Contest Rating - 1739</strong>.</> },
+            { icon: '⚙️', text: <>Built multiple <strong>production-ready ML pipelines</strong>.</> },
+            { icon: '🤗', text: <>Hands-on experience with <strong>Transformer models</strong> (T5, BERT).</> },
+            { icon: '🎓', text: <><strong>JEE Advanced 2023 — AIR 6252</strong>. Class XII CBSE: 91.6%. Currently at <strong>IIIT Vadodara</strong>, CPI 7.44.</> },
           ].map((a, i) => (
             <div key={i} className="achieve-item">
               <div className="achieve-icon">{a.icon}</div>
