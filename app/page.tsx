@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 export default function Home() {
-  const [sendState, setSendState] = useState<'idle' | 'sent'>('idle')
+  const [sendState, setSendState] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
 
   useEffect(() => {
     const reveals = document.querySelectorAll('.reveal')
@@ -22,9 +23,29 @@ export default function Home() {
     return () => observer.disconnect()
   }, [])
 
-  const handleSend = () => {
-    setSendState('sent')
-    setTimeout(() => setSendState('idle'), 3000)
+  const handleSend = async () => {
+    if (!formData.name || !formData.email || !formData.message) return;
+    
+    setSendState('loading')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (res.ok) {
+        setSendState('sent');
+        setFormData({ name: '', email: '', message: '' });
+        setTimeout(() => setSendState('idle'), 3000);
+      } else {
+        setSendState('error');
+        setTimeout(() => setSendState('idle'), 3000);
+      }
+    } catch (e) {
+      setSendState('error');
+      setTimeout(() => setSendState('idle'), 3000);
+    }
   }
 
   return (
@@ -304,19 +325,20 @@ export default function Home() {
           <div className="reveal">
             <div className="contact-form-box">
               <label className="c-input-label">Your Name</label>
-              <input type="text" className="c-input" placeholder="John Doe" />
+              <input type="text" className="c-input" placeholder="John Doe" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} disabled={sendState === 'loading'} />
 
               <label className="c-input-label">Email Address</label>
-              <input type="email" className="c-input" placeholder="hello@example.com" />
+              <input type="email" className="c-input" placeholder="hello@example.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} disabled={sendState === 'loading'} />
 
               <label className="c-input-label">Message</label>
-              <textarea className="c-textarea" placeholder="Tell me about your project or opportunity..." />
+              <textarea className="c-textarea" placeholder="Tell me about your project or opportunity..." value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} disabled={sendState === 'loading'} />
 
               <button
-                className={`c-send${sendState === 'sent' ? ' sent' : ''}`}
+                className={`c-send${sendState === 'sent' ? ' sent' : ''}${sendState === 'error' ? ' error' : ''}`}
                 onClick={handleSend}
+                disabled={sendState === 'loading' || sendState === 'sent'}
               >
-                {sendState === 'sent' ? '✓ Message Sent!' : '→ Send Message'}
+                {sendState === 'loading' ? 'Sending...' : sendState === 'sent' ? '✓ Message Sent!' : sendState === 'error' ? 'Error Sending' : '→ Send Message'}
               </button>
             </div>
           </div>
