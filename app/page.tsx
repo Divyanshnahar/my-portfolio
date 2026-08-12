@@ -88,7 +88,7 @@ export default function Home() {
 
           <div className="hero-stats anim-5">
             <div>
-              <div className="stat-val">500+</div>
+              <div className="stat-val">600+</div>
               <div className="stat-label">DSA Problems</div>
             </div>
             <div>
@@ -144,32 +144,13 @@ export default function Home() {
                   <a href="https://www.rayeva.com/" target="_blank" rel="noreferrer">Rayeva World Pvt Ltd ↗</a>
                 </div>
               </div>
-              <div className="exp-date">May 2026 – Present</div>
+              <div className="exp-date">May 2026 – Aug 2026</div>
             </div>
             <ul className="exp-bullets">
               <li><strong>Engineered core backend features</strong> using Node.js and REST APIs, including a scalable <strong>Excel-to-Supabase bulk product upload</strong> system that reduced B2B and B2C product upload time by 90%.</li>
               <li><strong>Architected custom Razorpay checkout flows</strong>, implementing an automated 50% advance payment system for high-volume B2B orders to secure enterprise transactions.</li>
               <li><strong>Automated post-purchase fulfillment</strong> by designing dynamic invoice generation and custom sticker modules, cutting manual processing time.</li>
-              <li><strong>Executed technical SEO optimizations</strong> and resolved critical system bugs, driving an 80% increase in organic search indexing and enhancing overall application stability.</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Bharat Talent */}
-        <div className="reveal">
-          <div className="exp-card">
-            <div className="exp-top">
-              <div>
-                <div className="exp-role">Full Stack Developer Intern</div>
-                <div className="exp-company">
-                  <a href="https://hiregence.com/" target="_blank" rel="noreferrer">Bharat Talent ↗</a>
-                </div>
-              </div>
-              <div className="exp-date">Jan 2026 – Feb 2026</div>
-            </div>
-            <ul className="exp-bullets">
-              <li>Developed backend services using <strong>Firebase, Next.js, and Python</strong>.</li>
-              <li>Built responsive dashboards and integrated AI-based features for automation.</li>
+              <li><strong>Executed technical SEO optimizations</strong> and resolved critical system bugs, driving a 80% increase in organic search indexing and enhancing overall application stability.</li>
             </ul>
           </div>
         </div>
@@ -201,39 +182,21 @@ export default function Home() {
             </a>
           </div>
 
-          {/* PROJECT 02 — NL to SQL */}
+          {/* PROJECT 02 — AI Interviewer */}
           <div className="proj-card">
             <div className="proj-num">PROJECT / 02</div>
-            <div className="proj-name">Natural Language → SQL Assistant</div>
+            <div className="proj-name">AI Interviewer — Mock Interview Platform</div>
             <div className="proj-desc">
-              End-to-end Text-to-SQL system. Fine-tuned T5 with schema-aware generation,
-              fuzzy column matching, Gemini LLM fallback and SQL validation to eliminate hallucinations.
-              Deployed via Docker on Hugging Face Spaces.
+              Full-stack AI-powered mock interview platform with voice-based interview simulation.
+              Integrated Google Gemini for contextual questions and evaluation. Features voice-first
+              experience with Web Speech API and ElevenLabs. Developed secure auth with NextAuth v5.
             </div>
             <div className="proj-stack">
-              {['FastAPI', 'T5', 'Gemini API', 'Docker'].map(t => (
+              {['Next.js', 'React', 'Prisma', 'PostgreSQL', 'Gemini API', 'ElevenLabs'].map(t => (
                 <span key={t} className="tag">{t}</span>
               ))}
             </div>
-            <a href="https://divyanshnahar15-nltosql.hf.space/docs#/" className="proj-link" target="_blank" rel="noreferrer">
-              View Live ↗
-            </a>
-          </div>
-
-          {/* PROJECT 03 — Emotion Detection */}
-          <div className="proj-card">
-            <div className="proj-num">PROJECT / 03</div>
-            <div className="proj-name">Real-Time Emotion Detection System</div>
-            <div className="proj-desc">
-              Full-stack emotion detection web app powered by a CNN trained on 35k+ facial images,
-              delivering real-time inference with a Next.js frontend deployed on Vercel.
-            </div>
-            <div className="proj-stack">
-              {['Flask', 'Next.js', 'CNN', 'Vercel'].map(t => (
-                <span key={t} className="tag">{t}</span>
-              ))}
-            </div>
-            <a href="https://emotion-frontend-vert.vercel.app/" className="proj-link" target="_blank" rel="noreferrer">
+            <a href="https://ai-interview-eight-dun.vercel.app/" className="proj-link" target="_blank" rel="noreferrer">
               View Live ↗
             </a>
           </div>
@@ -248,10 +211,10 @@ export default function Home() {
 
         <div className="skills-grid reveal">
           {[
-            { title: 'Programming & ML', pills: ['C++', 'Javascript', 'Python', 'Machine Learning', 'Deep Learning', 'NLP', 'Scikit-Learn', 'TensorFlow'] },
+            { title: 'Programming & ML', pills: ['C++', 'Javascript', 'Python', 'Machine Learning', 'Deep Learning', 'NLP', 'TensorFlow'] },
             { title: 'NLP & LLMs', pills: ['Text-to-SQL', 'Transformers', 'Hugging Face', 'Embeddings', 'Prompt Engineering'] },
-            { title: 'Web & Backend', pills: ['Next.js', 'React', 'TypeScript', 'Flask', 'FastAPI', 'REST APIs', 'Firebase', 'Plasmic'] },
-            { title: 'Databases & Tools', pills: ['MySQL', 'PostgreSQL', 'MongoDB', 'Docker', 'Git', 'Linux', 'HF Spaces'] },
+            { title: 'Web & Backend', pills: ['Next.js', 'React', 'TypeScript', 'FastAPI', 'REST APIs', 'FireBase', 'Plasmic'] },
+            { title: 'Databases & Tools', pills: ['MySQL', 'PostgreSQL', 'MongoDB', 'Docker', 'Git', 'Linux', 'Hugging Face Spaces'] },
           ].map(block => (
             <div key={block.title} className="skill-block">
               <div className="skill-block-title">{block.title}</div>
@@ -266,11 +229,10 @@ export default function Home() {
         <div className="section-label" style={{ marginTop: '3.5rem' }}>Highlights</div>
         <div className="achieve-list reveal" style={{ marginTop: '1rem' }}>
           {[
-            { icon: '🧠', text: <>Solved <strong>500+ DSA problems</strong> on <a href="https://leetcode.com/u/divyanshnahar15/" target="_blank" rel="noreferrer"><strong>LeetCode</strong></a> and CodeChef.</> },
-            { icon: '📈', text: <><strong>LeetCode Contest Rating - 1739</strong>.</> },
-            { icon: '⚙️', text: <>Built multiple <strong>production-ready ML pipelines</strong>.</> },
-            { icon: '🤗', text: <>Hands-on experience with <strong>Transformer models</strong> (T5, BERT).</> },
-            { icon: '🎓', text: <><strong>JEE Advanced 2023 — AIR 6252</strong>. Class XII CBSE: 91.6%. Currently at <strong>IIIT Vadodara</strong>, CPI 7.44.</> },
+            { icon: '🎓', text: <>Qualified <strong>JEE Advanced 2023</strong> with an <strong>AIR of 6252</strong>.</> },
+            { icon: '🚀', text: <><strong>Flipkart GRiD 8.0</strong> Semi-Finalist.</> },
+            { icon: '🧠', text: <>Solved <strong>600+ DSA problems</strong> on <a href="https://leetcode.com/u/divyanshnahar15/" target="_blank" rel="noreferrer"><strong>LeetCode</strong></a> and CodeChef.</> },
+            { icon: '📈', text: <>Achieved a <strong>Knight badge</strong> at LeetCode; <strong>Contest Rating of 1875</strong>.</> },
           ].map((a, i) => (
             <div key={i} className="achieve-item">
               <div className="achieve-icon">{a.icon}</div>
