@@ -1,74 +1,177 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+
+type SendState = 'idle' | 'loading' | 'sent' | 'error'
+
+type FormData = {
+  name: string
+  email: string
+  message: string
+}
+
+const skillGroups = [
+  {
+    title: 'Programming Languages',
+    pills: ['Python', 'JavaScript', 'TypeScript', 'C++', 'SQL'],
+  },
+  {
+    title: 'CS Fundamentals',
+    pills: ['Data Structures & Algorithms', 'OOP', 'DBMS', 'Operating Systems', 'Computer Networks'],
+  },
+  {
+    title: 'Frontend',
+    pills: ['React', 'Next.js', 'HTML', 'CSS', 'Tailwind CSS'],
+  },
+  {
+    title: 'Backend & Databases',
+    pills: [
+      'Node.js',
+      'FastAPI',
+      'REST APIs',
+      'WebSockets',
+      'Microservices',
+      'PostgreSQL',
+      'MySQL',
+      'MongoDB',
+      'Redis',
+    ],
+  },
+  {
+    title: 'Cloud & Tools',
+    pills: ['AWS', 'Docker', 'Kubernetes', 'Kafka', 'Git', 'Linux', 'Supabase', 'GitHub Actions'],
+  },
+  {
+    title: 'AI & Machine Learning',
+    pills: [
+      'LLMs',
+      'Prompt Engineering',
+      'Agentic Workflows',
+      'MCP',
+      'Gemini API',
+      'Hugging Face',
+      'Transformers',
+      'NLP',
+      'TensorFlow',
+      'LangGraph',
+      'RAG',
+    ],
+  },
+]
+
+const certifications = [
+  {
+    issuer: 'Coursera · deeplearning.ai',
+    name: 'NLP with Classification & Vector Spaces',
+    url: 'https://www.coursera.org/account/accomplishments/records/QIUFANLQ90UH',
+  },
+  {
+    issuer: 'Coursera · deeplearning.ai',
+    name: 'NLP with Probabilistic Models',
+    url: 'https://www.coursera.org/account/accomplishments/verify/HP9AOIJO7TMU',
+  },
+  {
+    issuer: 'Coursera · deeplearning.ai',
+    name: 'NLP with Sequence Models',
+    url: 'https://www.coursera.org/account/accomplishments/verify/RSCHGG7ED3TR',
+  },
+  {
+    issuer: '100xDevs',
+    name: '0–100 Full Stack Development',
+    url: 'https://app.100xdevs.com/certificate/verify/I8LVNT9L',
+  },
+]
 
 export default function Home() {
-  const [sendState, setSendState] = useState<'idle' | 'loading' | 'sent' | 'error'>('idle')
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' })
+  const [sendState, setSendState] = useState<SendState>('idle')
+  const [formData, setFormData] = useState<FormData>({ name: '', email: '', message: '' })
+  const [formError, setFormError] = useState('')
 
   useEffect(() => {
-    const reveals = document.querySelectorAll('.reveal')
+    const reveals = document.querySelectorAll<HTMLElement>('.reveal')
+
+    if (typeof IntersectionObserver === 'undefined') {
+      reveals.forEach((element) => element.classList.add('visible'))
+      return
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('visible')
-            observer.unobserve(e.target)
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+            observer.unobserve(entry.target)
           }
         })
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     )
-    reveals.forEach(r => observer.observe(r))
+
+    reveals.forEach((element) => observer.observe(element))
     return () => observer.disconnect()
   }, [])
 
-  const handleSend = async () => {
-    if (!formData.name || !formData.email || !formData.message) return;
-    
+  const handleSend = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim(),
+      message: formData.message.trim(),
+    }
+
+    if (!payload.name || !payload.email || !payload.message) {
+      setFormError('Please fill in all fields before sending your message.')
+      return
+    }
+
+    setFormError('')
     setSendState('loading')
+
     try {
-      const res = await fetch('/api/contact', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      
-      if (res.ok) {
-        setSendState('sent');
-        setFormData({ name: '', email: '', message: '' });
-        setTimeout(() => setSendState('idle'), 3000);
-      } else {
-        setSendState('error');
-        setTimeout(() => setSendState('idle'), 3000);
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) {
+        throw new Error('The contact request failed.')
       }
-    } catch (e) {
-      setSendState('error');
-      setTimeout(() => setSendState('idle'), 3000);
+
+      setSendState('sent')
+      setFormData({ name: '', email: '', message: '' })
+      window.setTimeout(() => setSendState('idle'), 3500)
+    } catch {
+      setSendState('error')
+      window.setTimeout(() => setSendState('idle'), 3500)
     }
   }
 
   return (
     <>
-      {/* NAV */}
+      {/* NAVIGATION */}
       <nav className="nav">
-        <div className="nav-logo">DN<span>.dev</span></div>
+        <a href="#about" className="nav-logo" aria-label="Divyansh Nahar home">
+          DN<span>.dev</span>
+        </a>
         <ul className="nav-links">
           <li><a href="#about">About</a></li>
           <li><a href="#experience">Experience</a></li>
+          <li><a href="#education">Education</a></li>
           <li><a href="#projects">Projects</a></li>
           <li><a href="#skills">Skills</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
 
-      {/* HERO */}
+      {/* HERO / ABOUT */}
       <section className="hero" id="about">
         <div className="hero-glow" />
         <div className="hero-glow2" />
 
         <div className="hero-content">
-          <div className="hero-tag anim-1">Available for opportunities · 2026</div>
+          <div className="hero-tag anim-1">Full Stack Development · AI Systems · Backend Engineering</div>
 
           <h1 className="hero-name anim-2">
             Divyansh<br />
@@ -76,24 +179,43 @@ export default function Home() {
           </h1>
 
           <p className="hero-sub anim-3">
-            Full Stack Engineer &amp; ML Practitioner building intelligent systems —
-            from LLM pipelines to production-ready backends.
+            Computer Science undergraduate and full-stack developer building production-ready
+            applications, scalable backend systems, and AI-powered experiences.
           </p>
 
           <div className="hero-links anim-4">
-            <a href="mailto:divyanshnahar15@gmail.com" className="btn btn-primary">→ Say Hello</a>
-            <a href="https://github.com/DivyanshNahar" target="_blank" rel="noreferrer" className="btn btn-ghost">GitHub ↗</a>
-            <a href="https://www.linkedin.com/in/divyansh-nahar-8872a6297/" target="_blank" rel="noreferrer" className="btn btn-ghost">LinkedIn ↗</a>
+            <a href="mailto:divyanshnahar15@gmail.com" className="btn btn-primary">
+              → Say Hello
+            </a>
+            <a
+              href="https://github.com/DivyanshNahar"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-ghost"
+            >
+              GitHub ↗
+            </a>
+            <a
+              href="https://www.linkedin.com/in/divyansh-nahar-8872a6297/"
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn-ghost"
+            >
+              LinkedIn ↗
+            </a>
+            <a href="/resume.pdf" target="_blank" rel="noreferrer" className="btn btn-ghost">
+              Resume ↗
+            </a>
           </div>
 
           <div className="hero-stats anim-5">
             <div>
-              <div className="stat-val">600+</div>
-              <div className="stat-label">DSA Problems</div>
+              <div className="stat-val">700+</div>
+              <div className="stat-label">LeetCode Problems</div>
             </div>
             <div>
-              <div className="stat-val">3+</div>
-              <div className="stat-label">ML Deployments</div>
+              <div className="stat-val">1935</div>
+              <div className="stat-label">LeetCode Rating</div>
             </div>
             <div>
               <div className="stat-val">AIR <span className="stat-sub">6252</span></div>
@@ -102,7 +224,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Floating terminal */}
+        {/* FLOATING TERMINAL */}
         <div className="terminal-card anim-terminal">
           <div className="terminal-bar">
             <div className="dot dot-r" />
@@ -114,15 +236,15 @@ export default function Home() {
             <div><span className="t-prompt">~/ </span><span className="t-cmd">whoami</span></div>
             <div className="t-out">divyansh_nahar</div>
             <br />
-            <div><span className="t-prompt">~/ </span><span className="t-cmd">cat skills.txt</span></div>
-            <div className="t-out">→ <span className="t-hl">NLP</span> · T5 · BERT · LLMs</div>
-            <div className="t-out">→ <span className="t-hl">FastAPI</span> · Flask · Next.js</div>
-            <div className="t-out">→ <span className="t-hl">Firebase</span> · Docker · Postgres</div>
+            <div><span className="t-prompt">~/ </span><span className="t-cmd">cat stack.txt</span></div>
+            <div className="t-out">→ <span className="t-hl">Node.js</span> · Next.js · FastAPI</div>
+            <div className="t-out">→ <span className="t-hl">PostgreSQL</span> · Redis · MongoDB</div>
+            <div className="t-out">→ <span className="t-hl">LLMs</span> · RAG · LangGraph</div>
             <br />
             <div><span className="t-prompt">~/ </span><span className="t-cmd">cat status.txt</span></div>
             <div className="t-out">🎓 IIIT Vadodara · <span className="t-hl">CSE &#39;27</span> (CPI 7.44)</div>
             <div className="t-out">📍 Gandhinagar, India</div>
-            <div className="t-out">⚡ Building cool things...</div>
+            <div className="t-out">⚡ Building useful things...</div>
             <br />
             <div><span className="t-prompt">~/ </span><span className="t-cmd">_<span className="t-blink">▋</span></span></div>
           </div>
@@ -131,26 +253,68 @@ export default function Home() {
 
       {/* EXPERIENCE */}
       <section className="section" id="experience">
-        <div className="section-label">01. Work</div>
+        <div className="section-label">01. Experience</div>
         <div className="section-title">Where I&apos;ve <span>Shipped</span></div>
 
-        {/* Rayeva World — NEW */}
         <div className="reveal">
           <div className="exp-card">
             <div className="exp-top">
               <div>
                 <div className="exp-role">Full Stack Developer Intern</div>
                 <div className="exp-company">
-                  <a href="https://www.rayeva.com/" target="_blank" rel="noreferrer">Rayeva World Pvt Ltd ↗</a>
+                  <a href="https://www.rayeva.com/" target="_blank" rel="noreferrer">
+                    Rayeva World Pvt Ltd ↗
+                  </a>
                 </div>
               </div>
               <div className="exp-date">May 2026 – Aug 2026</div>
             </div>
             <ul className="exp-bullets">
-              <li><strong>Engineered core backend features</strong> using Node.js and REST APIs, including a scalable <strong>Excel-to-Supabase bulk product upload</strong> system that reduced B2B and B2C product upload time by 90%.</li>
-              <li><strong>Architected custom Razorpay checkout flows</strong>, implementing an automated 50% advance payment system for high-volume B2B orders to secure enterprise transactions.</li>
-              <li><strong>Automated post-purchase fulfillment</strong> by designing dynamic invoice generation and custom sticker modules, cutting manual processing time.</li>
-              <li><strong>Executed technical SEO optimizations</strong> and resolved critical system bugs, driving a 80% increase in organic search indexing and enhancing overall application stability.</li>
+              <li>
+                Shipped production full-stack features using <strong>Node.js and REST APIs</strong>,
+                including an Excel-to-Supabase bulk data ingestion pipeline with validation that
+                reduced B2B and B2C product upload time by <strong>90%</strong>.
+              </li>
+              <li>
+                Architected custom <strong>Razorpay payment workflows</strong>, implementing an
+                automated 50% advance-payment rule for high-volume B2B orders.
+              </li>
+              <li>
+                Engineered automated, event-driven fulfillment workflows for <strong>invoice and
+                shipping-label generation</strong>, integrating order-state transitions and
+                reducing manual processing.
+              </li>
+              <li>
+                Delivered technical SEO optimizations and critical production bug fixes, driving an
+                <strong> 80% increase in organic search indexing</strong> and improving system
+                stability.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* EDUCATION */}
+      <section className="section" id="education">
+        <div className="section-label">02. Education</div>
+        <div className="section-title">Academic <span>Background</span></div>
+
+        <div className="reveal">
+          <div className="exp-card">
+            <div className="exp-top">
+              <div>
+                <div className="exp-role">B.Tech in Computer Science and Engineering</div>
+                <div className="exp-company">Indian Institute of Information Technology, Vadodara</div>
+              </div>
+              <div className="exp-date">Sept 2023 – May 2027</div>
+            </div>
+            <ul className="exp-bullets">
+              <li><strong>CPI:</strong> 7.44 / 10.00</li>
+              <li>
+                <strong>Relevant coursework:</strong> OOP, Software Engineering, DBMS, DSA,
+                Artificial Intelligence, Cryptography, Operating Systems, and Computer Networks.
+              </li>
+              <li><strong>Class XII (CBSE):</strong> 91.6% <span aria-hidden="true"> · </span><strong>Class X (CBSE):</strong> 90.4%</li>
             </ul>
           </div>
         </div>
@@ -158,101 +322,156 @@ export default function Home() {
 
       {/* PROJECTS */}
       <section className="section" id="projects">
-        <div className="section-label">02. Build</div>
+        <div className="section-label">03. Projects</div>
         <div className="section-title">Things I&apos;ve <span>Built</span></div>
 
         <div className="projects-grid reveal">
-
-          {/* PROJECT 01 — ReelsStack */}
+          {/* PROJECT 01 — REELSSTACK */}
           <div className="proj-card">
             <div className="proj-num">PROJECT / 01</div>
             <div className="proj-name">ReelsStack — AI Video Generation Platform</div>
             <div className="proj-desc">
-              Full-stack AI-powered short video generation platform. Generates scene-wise scripts
-              via Gemini API, AI images via Stable Diffusion, ElevenLabs voice synthesis,
-              Deepgram captions, and cloud rendering with Remotion + GitHub Actions.
+              Built a full-stack AI-powered video generation platform that orchestrates a
+              multi-step LLM pipeline. It generates scene-wise scripts with Gemini API and
+              AI-generated images with Stable Diffusion through Hugging Face. ElevenLabs voice
+              synthesis and Deepgram caption generation run as chained stages, followed by
+              cloud-based rendering with Remotion and GitHub Actions.
             </div>
             <div className="proj-stack">
-              {['Next.js', 'Gemini API', 'HuggingFace', 'ElevenLabs', 'Remotion', 'Cloudinary'].map(t => (
-                <span key={t} className="tag">{t}</span>
+              {[
+                'Next.js',
+                'Gemini API',
+                'Hugging Face',
+                'Stable Diffusion',
+                'ElevenLabs',
+                'Deepgram',
+                'Cloudinary',
+                'Remotion',
+                'GitHub Actions',
+              ].map((technology) => (
+                <span key={technology} className="tag">{technology}</span>
               ))}
             </div>
-            <a href="https://reel-stack-9mcf.vercel.app/" className="proj-link" target="_blank" rel="noreferrer">
+            <a
+              href="https://reel-stack-9mcf.vercel.app/"
+              className="proj-link"
+              target="_blank"
+              rel="noreferrer"
+            >
               View Live ↗
             </a>
           </div>
 
-          {/* PROJECT 02 — AI Interviewer */}
+          {/* PROJECT 02 — AI INTERVIEWER */}
           <div className="proj-card">
             <div className="proj-num">PROJECT / 02</div>
             <div className="proj-name">AI Interviewer — Mock Interview Platform</div>
             <div className="proj-desc">
-              Full-stack AI-powered mock interview platform with voice-based interview simulation.
-              Integrated Google Gemini for contextual questions and evaluation. Features voice-first
-              experience with Web Speech API and ElevenLabs. Developed secure auth with NextAuth v5.
+              Built a full-stack, voice-based mock interview platform using Next.js, React, Prisma,
+              and PostgreSQL. Integrated Google Gemini with structured outputs to generate
+              contextual questions, evaluate responses, and provide recruiter-style feedback with
+              real-time category-wise scoring. Includes a voice-first experience with ElevenLabs,
+              secure authentication using NextAuth v5, interview history, and an analytics dashboard.
             </div>
             <div className="proj-stack">
-              {['Next.js', 'React', 'Prisma', 'PostgreSQL', 'Gemini API', 'ElevenLabs'].map(t => (
-                <span key={t} className="tag">{t}</span>
+              {[
+                'Next.js',
+                'React',
+                'Prisma',
+                'PostgreSQL',
+                'Gemini API',
+                'ElevenLabs',
+                'NextAuth v5',
+              ].map((technology) => (
+                <span key={technology} className="tag">{technology}</span>
               ))}
             </div>
-            <a href="https://ai-interview-eight-dun.vercel.app/" className="proj-link" target="_blank" rel="noreferrer">
+            <a
+              href="https://ai-interview-eight-dun.vercel.app/"
+              className="proj-link"
+              target="_blank"
+              rel="noreferrer"
+            >
               View Live ↗
             </a>
           </div>
-
         </div>
       </section>
 
-      {/* SKILLS */}
+      {/* TECHNICAL SKILLS */}
       <section className="section" id="skills">
-        <div className="section-label">03. Stack</div>
+        <div className="section-label">04. Technical Stack</div>
         <div className="section-title">What I <span>Work With</span></div>
 
         <div className="skills-grid reveal">
-          {[
-            { title: 'Programming & ML', pills: ['C++', 'Javascript', 'Python', 'Machine Learning', 'Deep Learning', 'NLP', 'TensorFlow'] },
-            { title: 'NLP & LLMs', pills: ['Text-to-SQL', 'Transformers', 'Hugging Face', 'Embeddings', 'Prompt Engineering'] },
-            { title: 'Web & Backend', pills: ['Next.js', 'React', 'TypeScript', 'FastAPI', 'REST APIs', 'FireBase', 'Plasmic'] },
-            { title: 'Databases & Tools', pills: ['MySQL', 'PostgreSQL', 'MongoDB', 'Docker', 'Git', 'Linux', 'Hugging Face Spaces'] },
-          ].map(block => (
-            <div key={block.title} className="skill-block">
-              <div className="skill-block-title">{block.title}</div>
+          {skillGroups.map((group) => (
+            <div key={group.title} className="skill-block">
+              <div className="skill-block-title">{group.title}</div>
               <div className="skill-pills">
-                {block.pills.map(p => <span key={p} className="skill-pill">{p}</span>)}
+                {group.pills.map((skill) => (
+                  <span key={skill} className="skill-pill">{skill}</span>
+                ))}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Achievements */}
+        {/* TECHNICAL INTERESTS */}
+        <div className="section-label" style={{ marginTop: '3.5rem' }}>Technical Interests</div>
+        <div className="skill-pills reveal" style={{ marginTop: '1rem' }}>
+          {[
+            'Software Development',
+            'Full Stack Development',
+            'Scalable Backend Systems',
+            'Agentic AI Systems',
+            'LLM Applications',
+            'Workflow Automation',
+          ].map((interest) => (
+            <span key={interest} className="skill-pill">{interest}</span>
+          ))}
+        </div>
+
+        {/* ACHIEVEMENTS */}
         <div className="section-label" style={{ marginTop: '3.5rem' }}>Highlights</div>
         <div className="achieve-list reveal" style={{ marginTop: '1rem' }}>
           {[
-            { icon: '🎓', text: <>Qualified <strong>JEE Advanced 2023</strong> with an <strong>AIR of 6252</strong>.</> },
-            { icon: '🚀', text: <><strong>Flipkart GRiD 8.0</strong> Semi-Finalist.</> },
-            { icon: '🧠', text: <>Solved <strong>600+ DSA problems</strong> on <a href="https://leetcode.com/u/divyanshnahar15/" target="_blank" rel="noreferrer"><strong>LeetCode</strong></a> and CodeChef.</> },
-            { icon: '📈', text: <>Achieved a <strong>Knight badge</strong> at LeetCode; <strong>Contest Rating of 1875</strong>.</> },
-          ].map((a, i) => (
-            <div key={i} className="achieve-item">
-              <div className="achieve-icon">{a.icon}</div>
-              <div className="achieve-text">{a.text}</div>
+            {
+              icon: '🎓',
+              text: <>Qualified <strong>JEE Advanced 2023</strong> with an <strong>All India Rank of 6252</strong>.</>,
+            },
+            {
+              icon: '🚀',
+              text: <><strong>Flipkart GRiD 8.0</strong> Semi-Finalist.</>,
+            },
+            {
+              icon: '🧠',
+              text: <>Solved <strong>700+ problems</strong> on <a href="https://leetcode.com/u/divyanshnahar15/" target="_blank" rel="noreferrer"><strong>LeetCode</strong></a>.</>,
+            },
+            {
+              icon: '📈',
+              text: <>Earned the <strong>Knight badge</strong> on LeetCode with a contest rating of <strong>1935</strong>.</>,
+            },
+          ].map((achievement, index) => (
+            <div key={index} className="achieve-item">
+              <div className="achieve-icon">{achievement.icon}</div>
+              <div className="achieve-text">{achievement.text}</div>
             </div>
           ))}
         </div>
 
-        {/* Certifications */}
+        {/* CERTIFICATIONS */}
         <div className="section-label" style={{ marginTop: '3.5rem' }}>Certifications</div>
         <div className="certs-grid reveal" style={{ marginTop: '1rem' }}>
-          {[
-            { issuer: 'Coursera · deeplearning.ai', name: 'NLP with Classification & Vector Spaces', url: 'https://www.coursera.org/account/accomplishments/records/QIUFANLQ90UH' },
-            { issuer: 'Coursera · deeplearning.ai', name: 'NLP with Probabilistic Models', url: 'https://www.coursera.org/account/accomplishments/verify/HP9AOIJO7TMU' },
-            { issuer: 'Coursera · deeplearning.ai', name: 'NLP with Sequence Models', url: 'https://www.coursera.org/account/accomplishments/verify/RSCHGG7ED3TR' },
-            { issuer: '100xDevs', name: '0–100 Full Stack Development', url: 'https://app.100xdevs.com/certificate/verify/I8LVNT9L' },
-          ].map(c => (
-            <a key={c.name} href={c.url} className="cert-card" target="_blank" rel="noreferrer">
-              <div className="cert-issuer">{c.issuer}</div>
-              <div className="cert-name">{c.name}</div>
+          {certifications.map((certification) => (
+            <a
+              key={certification.name}
+              href={certification.url}
+              className="cert-card"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <div className="cert-issuer">{certification.issuer}</div>
+              <div className="cert-name">{certification.name}</div>
             </a>
           ))}
         </div>
@@ -262,22 +481,31 @@ export default function Home() {
       <section className="section contact-section" id="contact">
         <div className="contact-inner">
           <div className="reveal">
-            <div className="section-label">04. Connect</div>
+            <div className="section-label">05. Connect</div>
             <div className="contact-big">Let&apos;s <span>Talk</span></div>
             <p className="contact-desc">
-              Open to internships, full-time roles, and interesting side projects —
-              especially in AI/ML systems and full-stack engineering.
+              Interested in software engineering, full-stack development, scalable backend
+              systems, or AI applications? Let&apos;s connect and build something useful.
             </p>
             <ul className="contact-links-list">
               {[
                 { label: 'divyanshnahar15@gmail.com', href: 'mailto:divyanshnahar15@gmail.com' },
                 { label: '+91 946-103-2455', href: 'tel:+919461032455' },
                 { label: 'github.com/DivyanshNahar', href: 'https://github.com/DivyanshNahar' },
-                { label: 'linkedin.com/in/divyansh-nahar', href: 'https://www.linkedin.com/in/divyansh-nahar-8872a6297/' },
+                {
+                  label: 'linkedin.com/in/divyansh-nahar',
+                  href: 'https://www.linkedin.com/in/divyansh-nahar-8872a6297/',
+                },
                 { label: 'leetcode.com/divyanshnahar15', href: 'https://leetcode.com/u/divyanshnahar15/' },
-              ].map(l => (
-                <li key={l.label}>
-                  <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{l.label}</a>
+              ].map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    target={link.href.startsWith('http') ? '_blank' : undefined}
+                    rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
+                  >
+                    {link.label}
+                  </a>
                   <span className="c-icon">→</span>
                 </li>
               ))}
@@ -285,31 +513,82 @@ export default function Home() {
           </div>
 
           <div className="reveal">
-            <div className="contact-form-box">
-              <label className="c-input-label">Your Name</label>
-              <input type="text" className="c-input" placeholder="John Doe" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} disabled={sendState === 'loading'} />
+            <form className="contact-form-box" onSubmit={handleSend}>
+              <label className="c-input-label" htmlFor="contact-name">Your Name</label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                className="c-input"
+                placeholder="John Doe"
+                autoComplete="name"
+                value={formData.name}
+                onChange={(event) => {
+                  setFormData({ ...formData, name: event.target.value })
+                  setFormError('')
+                }}
+                disabled={sendState === 'loading'}
+                required
+              />
 
-              <label className="c-input-label">Email Address</label>
-              <input type="email" className="c-input" placeholder="hello@example.com" value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} disabled={sendState === 'loading'} />
+              <label className="c-input-label" htmlFor="contact-email">Email Address</label>
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                className="c-input"
+                placeholder="hello@example.com"
+                autoComplete="email"
+                value={formData.email}
+                onChange={(event) => {
+                  setFormData({ ...formData, email: event.target.value })
+                  setFormError('')
+                }}
+                disabled={sendState === 'loading'}
+                required
+              />
 
-              <label className="c-input-label">Message</label>
-              <textarea className="c-textarea" placeholder="Tell me about your project or opportunity..." value={formData.message} onChange={e => setFormData({ ...formData, message: e.target.value })} disabled={sendState === 'loading'} />
+              <label className="c-input-label" htmlFor="contact-message">Message</label>
+              <textarea
+                id="contact-message"
+                name="message"
+                className="c-textarea"
+                placeholder="Tell me about your project or opportunity..."
+                value={formData.message}
+                onChange={(event) => {
+                  setFormData({ ...formData, message: event.target.value })
+                  setFormError('')
+                }}
+                disabled={sendState === 'loading'}
+                required
+              />
+
+              {formError && <p role="alert">{formError}</p>}
+              {sendState === 'error' && (
+                <p role="alert">Something went wrong. Please try again or email me directly.</p>
+              )}
 
               <button
+                type="submit"
                 className={`c-send${sendState === 'sent' ? ' sent' : ''}${sendState === 'error' ? ' error' : ''}`}
-                onClick={handleSend}
                 disabled={sendState === 'loading' || sendState === 'sent'}
               >
-                {sendState === 'loading' ? 'Sending...' : sendState === 'sent' ? '✓ Message Sent!' : sendState === 'error' ? 'Error Sending' : '→ Send Message'}
+                {sendState === 'loading'
+                  ? 'Sending...'
+                  : sendState === 'sent'
+                    ? '✓ Message Sent!'
+                    : sendState === 'error'
+                      ? 'Error Sending'
+                      : '→ Send Message'}
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </section>
 
       {/* FOOTER */}
       <footer className="footer">
-        <p>© 2026 <a href="#">Divyansh Nahar</a>. Designed &amp; Built with ♥</p>
+        <p>© 2026 <a href="#about">Divyansh Nahar</a>. Designed &amp; Built with ♥</p>
         <p style={{ color: 'var(--border)' }}>IIIT Vadodara · CSE &apos;27</p>
       </footer>
     </>
